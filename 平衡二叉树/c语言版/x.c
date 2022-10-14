@@ -345,7 +345,8 @@ void zuoxuan(Shu *pre, Shu *p, Tree *L)
             pre->lnext = p->rnext;
         }
     }
-
+    
+    //将需要进行操作的节点的右子节点与自身交换，包括了值和子节点
     Shu *R_lnext = p->rnext->lnext;
 
     p->rnext->lnext = p;
@@ -375,7 +376,7 @@ void youxuan(Shu *pre, Shu *p, Tree *L)
             pre->lnext = p->lnext;
         }
     }
-
+    //将需要进行操作的节点的左子节点与自身交换，包括了值和子节点
     Shu *L_rnext = p->lnext->rnext;
     
     p->lnext->rnext = p;
