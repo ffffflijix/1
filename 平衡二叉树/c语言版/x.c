@@ -323,7 +323,7 @@ void *find_gao(Tree *L, Shu *p, Shu *pre)
 }
 
 /*
-    find_gao：并对不平衡的节点进行左旋平衡操作
+    zuoxuan：对不平衡的节点进行左旋平衡操作
         @L：进行操作的树
         @p:本轮查找进行操作的节点
         @pre:p的前一个节点，当p为根节点时，pre也是根节点
@@ -353,7 +353,7 @@ void zuoxuan(Shu *pre, Shu *p, Tree *L)
 }
 
 /*
-    find_gao：并对不平衡的节点进行右旋平衡操作
+    youxuan：对不平衡的节点进行右旋平衡操作
         @L：进行操作的树
         @p:本轮查找进行操作的节点
         @pre:p的前一个节点，当p为根节点时，pre也是根节点
