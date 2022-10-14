@@ -1,90 +1,125 @@
 #include "x.h"
 
 /*
-    add_in:ѭ���������ӵ�λ�ã������ҵ�λ�ú����Ӹýڵ㣬���Ӻ����ƽ�����
-        @L�����в�������
-        @p:���ֲ��ҽ��в����Ľڵ�
-        @x����Ҫ���ӵĽڵ�
+    add_in:循环查找添加的位置，并在找到位置后添加该节点，添加后进行平衡操作
+        @L：进行操作的树
+        @p:本轮查找进行操作的节点
+        @x：需要添加的节点
 */
 void add_in(Tree *L, Shu *p, Shu *x)
 {
-    if (L->gen == NULL) //������ڵ�Ϊ�գ������ӽڵ�Ϊ���ڵ�
+    if (L->gen == NULL) //如果根节点为空，则添加节点为根节点
     {
         L->gen = x;
         L->nodes++;
         return;
     }
 
-    //1.������ֵݹ��ѯ�Ľڵ��ֵС��x���������ӽڵ㲻Ϊ��
+    //1.如果本轮递归查询的节点的值小于x，并且右子节点不为空
     if (p->Data < x->Data && p->rnext != NULL)
     {
         add_in(L, p->rnext, x);
     }
-    //2.������ֵݹ��ѯ�Ľڵ��ֵ����x���������ӽڵ㲻Ϊ��
+    //2.如果本轮递归查询的节点的值大于x，并且左子节点不为空
     else if (p->Data > x->Data && p->lnext != NULL)
     {
         add_in(L, p->lnext, x);
     }
-    //3.������ֵݹ��ѯ�Ľڵ��ֵС��x���������ӽڵ�Ϊ��
+    //3.如果本轮递归查询的节点的值小于x，并且右子节点为空
     else if (p->Data < x->Data && p->rnext == NULL)
     {
         p->rnext = x;
         L->nodes++;
     }
-    //4.������ֵݹ��ѯ�Ľڵ��ֵ����x���������ӽڵ�Ϊ��
+    //4.如果本轮递归查询的节点的值大于x，并且右子节点为空
     else if(p->Data > x->Data && p->lnext == NULL)
     {
         p->lnext = x;
         L->nodes++;
     }
-    //5.������ֵݹ��ѯ�Ľڵ��ֵ����x
+    //5.如果本轮递归查询的节点的值等于x
     else if (p->Data == x->Data)
     {
-        printf("���д˽ڵ㣡��ֵΪ%d\n", p->Data);
+        printf("已有此节点！其值为%d\n", p->Data);
         return;
     }
-    //ƽ�����
+    //平衡操作
     find_gao(L, L->gen, L->gen);
     return;
 }
 
 /*
-    not_in:ѭ������ɾ����λ�ã������ҵ�λ�ú�ɾ���ýڵ㣬ɾ�������ƽ�����
-        @L�����в�������
-        @p:���ֲ��ҽ��в����Ľڵ�
-        @x:��Ҫɾ���Ľڵ��ֵ
+    not_in:循环查找删除的位置，并在找到位置后删除该节点，删除后进行平衡操作
+        @L：进行操作的树
+        @p:本轮查找进行操作的节点
+        @x:需要删除的节点的值
 */
 void not_in(Tree *L, Shu *p, int x)
 {
-    //δ��ѯ���˽ڵ�
-    if (p->Data < x && p->rnext == NULL)
+    //删除的是根节点
+    if (p == L->gen && p->Data == x)
     {
-        printf("�����ڴ˽ڵ�\n");
+        if (p->lnext != NULL && p->lnext->rnext != NULL)
+        {
+            //左子节点有右子节点
+            Shu *temp = p->lnext;
+            Shu *tempre = temp;
+
+            while (temp->rnext != NULL)
+            {
+                tempre = temp;
+                temp = temp->rnext;
+            }
+
+            p->Data = temp->Data;
+            tempre->rnext = NULL;
+            free(temp);
+        }
+        else if (p->lnext != NULL && p->lnext->rnext != NULL)
+        {
+            //左子节点没有右子节点
+            Shu *temp = p->lnext;
+
+            p->Data = p->lnext->Data;
+            p->lnext = p->lnext->lnext;
+            free(temp);
+        }
+        else if (p->lnext == NULL)
+        {
+            //根节点没有左子节点
+            L->gen = p->rnext;
+            free(p);
+        }
+    }
+    //未查询到此节点
+    else if (p->Data < x && p->rnext == NULL)
+    {
+        printf("不存在此节点\n");
         return;
     }
-    //δ��ѯ���˽ڵ�
+    //未查询到此节点
     else if (p->Data > x && p->lnext == NULL)
     {
-        printf("�����ڴ˽ڵ�\n");
+        printf("不存在此节点\n");
         return;
     }
-    //1.������ֵݹ��ѯ�Ľڵ��ֵС��x���������ӽڵ��ֵ����x
+    //1.如果本轮递归查询的节点的值小于x，并且右子节点的值不是x
     else if (p->Data < x && p->rnext->Data != x)
     {
         not_in(L, p->rnext, x);
     }
-    //2.������ֵݹ��ѯ�Ľڵ��ֵ����x���������ӽڵ��ֵ����x
+    //2.如果本轮递归查询的节点的值大于x，并且左子节点的值不是x
     else if (p->Data > x && p->lnext->Data != x)
     {
         not_in(L, p->lnext, x);
     }
-    //3.������ֵݹ��ѯ�Ľڵ��ֵС��x���������ӽڵ��ֵ��x
+    //3.如果本轮递归查询的节点的值小于x，并且右子节点的值是x
     else if (p->Data < x && p->rnext->Data == x)
     {
         L->nodes--;
         Shu *z = p->rnext;
 
-        //�Խڵ������ӽڵ�����������ɾ������
+        //对节点左右子节点情况分类进行删除操作
         if (z->lnext == NULL && z->rnext == NULL)
         {
             p->rnext = NULL;
@@ -109,7 +144,7 @@ void not_in(Tree *L, Shu *p, int x)
                 q = y;
                 y = y->rnext;
             }
-            //������������ֵ�������ɾ���ڵ㣬����ɾ�������������ֵ�ڵ�
+            //用左子树最大的值来代替待删除节点，并且删除左子树的最大值节点
             z->Data = y->Data;
             if (y == z->lnext)
             {
@@ -122,13 +157,13 @@ void not_in(Tree *L, Shu *p, int x)
             free(y);
         }
     }
-    //4.������ֵݹ��ѯ�Ľڵ��ֵ����x���������ӽڵ��ֵ��x
+    //4.如果本轮递归查询的节点的值大于x，并且右子节点的值是x
     else if (p->Data > x && p->lnext->Data == x)
     {
         L->nodes--;
         Shu *z = p->lnext;
 
-        //�Խڵ������ӽڵ�����������ɾ������
+        //对节点左右子节点情况分类进行删除操作
         if (z->lnext == NULL && z->rnext == NULL)
         {
             p->lnext = NULL;
@@ -153,7 +188,7 @@ void not_in(Tree *L, Shu *p, int x)
                 q = y;
                 y = y->rnext;
             }
-            //������������ֵ�������ɾ���ڵ㣬����ɾ�������������ֵ�ڵ�
+            //用左子树最大的值来代替待删除节点，并且删除左子树的最大值节点
             z->Data = y->Data;
             if (y == z->lnext)
             {
@@ -170,12 +205,12 @@ void not_in(Tree *L, Shu *p, int x)
 }
 
 /*
-    print:ѡ���Եݹ鷽ʽ������
-        @p����������Ľڵ�
-        @n:ѡ������ķ�ʽ
-            1.�������
-            2.�������
-            3.�������
+    print:选择性递归方式输出输出
+        @p：本轮输出的节点
+        @n:选择输出的方式
+            1.先序输出
+            2.中序输出
+            3.后序输出
 */
 void print(Shu *p, int n)
 {
@@ -184,7 +219,7 @@ void print(Shu *p, int n)
         return;
     }
 
-    //ͨ��n����a��ֵ��Ȼ��a%10��ֵѡ����������ҽڵ�ͱ��ڵ㣬�Դ˴��ѡ�����˳���Ŀ��
+    //通过n决定a的值，然后a%10的值选择先输出左右节点和本节点，以此达成选择输出顺序的目的
     int a = 0; 
     switch (n)
     {
@@ -217,8 +252,8 @@ void print(Shu *p, int n)
 }
 
 /*
-    howgao���ݹ�õ��ڵ�p�ĸ߶ȣ���ȣ�
-        @p:��Ҫ�õ��߶ȵĽڵ�
+    howgao：递归得到节点p的高度（深度）
+        @p:需要得到高度的节点
 */
 int howgao(Shu *p)
 {
@@ -235,15 +270,17 @@ int howgao(Shu *p)
 }
 
 /*
-    find_gao�����Բ�ƽ��Ľڵ��������ƽ�����
-        @L�����в�������
-        @p:���ֲ��ҽ��в����Ľڵ�
-        @pre:p��ǰһ���ڵ㣬��pΪ���ڵ�ʱ��preҲ�Ǹ��ڵ�
+    find_gao：并对不平衡的节点进行左旋平衡操作
+        @L：进行操作的树
+        @p:本轮查找进行操作的节点
+        @pre:p的前一个节点，当p为根节点时，pre也是根节点
 */
 void *find_gao(Tree *L, Shu *p, Shu *pre)
 {
-    if (p == NULL)
-        return NULL;
+    if (p == NULL || ( L->gen->rnext == NULL && L->gen->lnext == NULL))
+    {
+        return NULL;        
+    }
 
     find_gao(L, p->lnext, p);
     find_gao(L, p->rnext, p);
@@ -254,13 +291,13 @@ void *find_gao(Tree *L, Shu *p, Shu *pre)
         {
             if (howgao(p->rnext->lnext) > howgao(p->rnext->rnext))
             {
-                //���Һ���
+                //先右后左
                 youxuan(p, p->rnext, L);
                 zuoxuan(pre, p, L);
             }
             else
             {
-                //������
+                //简单左旋
                 zuoxuan(pre, p, L);
             }
         }
@@ -268,17 +305,17 @@ void *find_gao(Tree *L, Shu *p, Shu *pre)
         {
             if (howgao(p->lnext->rnext) > howgao(p->lnext->lnext))
             {
-                //�������
+                //先左后右
                 zuoxuan(p, p->lnext, L);
                 youxuan(pre, p, L);
             }
             else
             {
-                //������
+                //简单右旋
                 youxuan(pre, p, L);
             }
         }
-        printf("�ڵ�%d��ƽ��\n", p->Data);
+        printf("节点%d不平衡\n", p->Data);
         return p;
     }
 
@@ -286,10 +323,10 @@ void *find_gao(Tree *L, Shu *p, Shu *pre)
 }
 
 /*
-    find_gao�����Բ�ƽ��Ľڵ��������ƽ�����
-        @L�����в�������
-        @p:���ֲ��ҽ��в����Ľڵ�
-        @pre:p��ǰһ���ڵ㣬��pΪ���ڵ�ʱ��preҲ�Ǹ��ڵ�
+    find_gao：并对不平衡的节点进行左旋平衡操作
+        @L：进行操作的树
+        @p:本轮查找进行操作的节点
+        @pre:p的前一个节点，当p为根节点时，pre也是根节点
 */
 void zuoxuan(Shu *pre, Shu *p, Tree *L)
 {
@@ -316,10 +353,10 @@ void zuoxuan(Shu *pre, Shu *p, Tree *L)
 }
 
 /*
-    find_gao�����Բ�ƽ��Ľڵ��������ƽ�����
-        @L�����в�������
-        @p:���ֲ��ҽ��в����Ľڵ�
-        @pre:p��ǰһ���ڵ㣬��pΪ���ڵ�ʱ��preҲ�Ǹ��ڵ�
+    find_gao：并对不平衡的节点进行右旋平衡操作
+        @L：进行操作的树
+        @p:本轮查找进行操作的节点
+        @pre:p的前一个节点，当p为根节点时，pre也是根节点
 */
 void youxuan(Shu *pre, Shu *p, Tree *L)
 {
