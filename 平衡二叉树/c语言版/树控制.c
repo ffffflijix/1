@@ -9,7 +9,7 @@ void main()
 
     int a;
 
-    //Ìí¼Ó½Úµã£¬ÒÔ0Î´½áÎ²
+    //æ·»åŠ èŠ‚ç‚¹ï¼Œä»¥0æœªç»“å°¾
     while (1)
     {
         scanf("%d", &a);
@@ -25,7 +25,7 @@ void main()
         add_in(L, L->gen, x);
     }
 
-    //ÈıÖÖË³ĞòÊä³ö
+    //ä¸‰ç§é¡ºåºè¾“å‡º
     print(L->gen, 1);
     putchar('\n');
     print(L->gen, 2);
@@ -33,14 +33,14 @@ void main()
     print(L->gen, 3);
     putchar('\n');
 
-    //¶ş²æÊ÷µÄĞÅÏ¢
-    printf("¶ş²æÊ÷µÄ¸ß¶ÈÎª%d , ½Úµã¹²ÓĞ%d¸ö\n", howgao(L->gen), L->nodes);
+    //äºŒå‰æ ‘çš„ä¿¡æ¯
+    printf("äºŒå‰æ ‘çš„é«˜åº¦ä¸º%d , èŠ‚ç‚¹å…±æœ‰%dä¸ª\n", howgao(L->gen), L->nodes);
 
-    //É¾³ıÒ»¸ö½Úµã
+    //åˆ é™¤ä¸€ä¸ªèŠ‚ç‚¹
     scanf("%d", &a);
     not_in(L, L->gen, a);
 
-    //ÈıÖÖË³ĞòÊä³ö
+    //ä¸‰ç§é¡ºåºè¾“å‡º
     print(L->gen, 1);
     putchar('\n');
     print(L->gen, 2);
@@ -48,6 +48,8 @@ void main()
     print(L->gen, 3);
     putchar('\n');
 
-    //¶ş²æÊ÷ĞÅÏ¢
-    printf("¶ş²æÊ÷µÄ¸ß¶ÈÎª%d , ½Úµã¹²ÓĞ%d¸ö\n", howgao(L->gen), L->nodes);
+    //äºŒå‰æ ‘ä¿¡æ¯
+    printf("äºŒå‰æ ‘çš„é«˜åº¦ä¸º%d , èŠ‚ç‚¹å…±æœ‰%dä¸ª\n", howgao(L->gen), L->nodes);
+    
+    Destroy(L->gen);
 }
