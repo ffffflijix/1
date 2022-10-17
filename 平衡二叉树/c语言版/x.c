@@ -1,6 +1,22 @@
 #include "x.h"
 
 /*
+    Destroy:销毁二叉树
+        @node:递归调用删除的节点
+*/
+void Destroy( Shu *node )
+{
+    if( node == NULL )
+    {
+        return;
+    }
+
+    Destroy( node->lnext );
+    Destroy( node->rnext );
+    free( node );
+}
+
+/*
     add_in:循环查找添加的位置，并在找到位置后添加该节点，添加后进行平衡操作
         @L：进行操作的树
         @p:本轮查找进行操作的节点
