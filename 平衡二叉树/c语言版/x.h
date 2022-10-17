@@ -32,6 +32,14 @@ typedef struct tree
     Shu *gen;
 } Tree;
 
+
+/*
+    Destroy:销毁二叉树
+        @node:递归调用删除的节点
+*/
+void Destroy( Shu *node );
+
+
 /*
     add_in:循环查找添加的位置，并在找到位置后添加该节点，添加后进行平衡操作
         @L：进行操作的树
